@@ -21,7 +21,7 @@ namespace LibFFR
         public bool Enabled = true;
         public string Name = "Example Preset";
         public string FileExtension = "480p.mp4";
-        public string FFmpegArguments = "-c:v h264 -c:a aac -pix_fmt yuv420p -vf scale=-1:480 -y";
+        public string FFmpegArguments = "-hide_banner -c:v h264 -c:a aac -pix_fmt yuv420p -vf scale=-1:480 -y";
 
         // generate a new shortcut
         public void CreateShortcut()

@@ -46,12 +46,14 @@ namespace CLI
             if (preset == null) { PrintHelp(); return; }
             foreach (string file in files)
             {
-                var fi = new FileInfo(file);
-                var woe = Path.GetFileNameWithoutExtension(file);
+                var fnNoExt = Path.GetFileNameWithoutExtension(file);
+                var filePath = Path.GetDirectoryName(file);
                 var p = new Process();
                 p.StartInfo.FileName = "ffmpeg";
-                p.StartInfo.Arguments = $"-i \"{file}\" {preset.FFmpegArguments} \"{woe}.{preset.FileExtension}\"";
-                p.StartInfo.CreateNoWindow = true;
+                p.StartInfo.Arguments = $"-i \"{file}\" {preset.FFmpegArguments} \"{filePath}\\{fnNoExt}.{preset.FileExtension}\"";
+                Console.WriteLine($"> {p.StartInfo.FileName} {p.StartInfo.Arguments}");
+                //p.StartInfo.CreateNoWindow = true;
+                p.StartInfo.UseShellExecute = false;
                 p.Start();
                 p.WaitForExit();
             }
