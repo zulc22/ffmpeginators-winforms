@@ -3,3 +3,4 @@ packages
 **/bin
 **/obj
 setup-ffmpeginator.exe
+/external

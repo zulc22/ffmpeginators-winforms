@@ -25,7 +25,32 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 
 [Files]
-Source: "bin/*.*"; DestDir: "{app}"
+Source: "bin/*.*"; DestDir: "{app}"; Components: main
+Source: "external/gyan/ffmpeg-7.1.1-full_build/bin/ffmpeg.exe"; DestDir: "{app}"; Components: gyanffmpeg
+
+[Components]
+Name: "main"; Description: "FFmpeginator"; Types: full compact custom; Flags: fixed
+Name: "gyanffmpeg"; Description: "Gyan.dev FFmpeg executable {code:ffmpegnotice}"; Types: custom;
 
 [Icons]
 Name: "{group}\Preset Manager"; Filename: "{app}\FFmpeginatorPresetManager.exe"
+
+[Registry]
+Root: HKCU; Subkey: "Environment"; \
+    ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}"
+
+[Code]
+
+function ffmpegnotice(p: String): String;
+var ResultCode: Integer;
+begin
+
+if Exec('ffmpeg','-version','',SW_HIDE,ewWaitUntilTerminated,ResultCode) then begin
+  (* ffmpeg ran successfully *)
+  Result := '(FFmpeg found on system. not required)';
+end else begin
+  Result := '(Required. FFmpeg not in path)';
+  WizardSelectComponents('gyanffmpeg');
+end;
+
+end;
