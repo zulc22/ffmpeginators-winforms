@@ -1,5 +1,7 @@
 *Using this software requires you or a freinds' knowledge of FFmpeg to use.*
 
+[Releases page](https://github.com/zulc22/ffmpeginators-winforms/releases)
+
 # Infomercial Pitch
 
 Have you ever had to convert audio, video, or image files in a way that could so obviously be automated?
