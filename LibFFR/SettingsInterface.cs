@@ -12,7 +12,7 @@ using File = System.IO.File;
 
 namespace LibFFR
 {
-    public class Preset
+    public class Preset : ICloneable
     {
         // the name put before each entry in the Send To menu
         public static string ShortcutNamePrefix = "[FF] ";
@@ -43,6 +43,23 @@ namespace LibFFR
             shortcut.Arguments = a;
             shortcut.Save();
             Console.WriteLine();
+        }
+
+        public override string ToString()
+        {
+            return Name + (Enabled ? "" : " (disabled)");
+        }
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+        public static Preset FromJson(string json)
+        {
+            return JsonConvert.DeserializeObject<Preset>(json);
         }
     }
 
