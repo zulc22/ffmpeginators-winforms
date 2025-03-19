@@ -126,7 +126,7 @@
             // 
             // lbExample
             // 
-            this.lbExample.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbExample.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbExample.ForeColor = System.Drawing.SystemColors.GrayText;
             this.lbExample.Location = new System.Drawing.Point(12, 65);
             this.lbExample.Name = "lbExample";

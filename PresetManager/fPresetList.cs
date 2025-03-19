@@ -23,8 +23,14 @@ namespace PresetManager
 
         public void ResetLbPresets()
         {
+            // sort list before adding to UI
+            List<Preset> p = new List<Preset>(Settings.Presets());
+            p.Sort((Preset i, Preset j) =>
+            {
+                return i.Name.CompareTo(j.Name);
+            });
             lbPresets.Items.Clear();
-            lbPresets.Items.AddRange(Settings.Presets());
+            lbPresets.Items.AddRange(p.ToArray());
         }
 
         private void lbPresets_DoubleClick(object sender, EventArgs e)

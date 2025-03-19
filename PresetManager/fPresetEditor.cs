@@ -50,11 +50,13 @@ namespace PresetManager
 
         private void fPresetEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
-            SyncPresetToForm();
-            // Add preset
-            Settings.AddPreset(Preset);
-            //OpenedFrom.Show();
-            OpenedFrom.ResetLbPresets(); // Update listbox in main form since the list was modified
+            if (!DiscardPreset) { 
+                SyncPresetToForm();
+                // Add preset
+                Settings.AddPreset(Preset);
+                //OpenedFrom.Show();
+                OpenedFrom.ResetLbPresets(); // Update listbox in main form since the list was modified
+            }
             Dispose(); // mark this object for deletion
         }
 
@@ -110,7 +112,8 @@ namespace PresetManager
             (new fPresetEditor(
                 presetFromJson,
                 OpenedFrom,
-                Settings
+                Settings,
+                true
             )).Show();
             DiscardPreset = true;
             Close();
