@@ -121,6 +121,7 @@ namespace CLI
         {
             var preset = settings.PresetByName(presetName);
             if (preset == null) { PrintHelp(); return; }
+            int filesComplete = 0;
             foreach (string file in files)
             {
                 var fnNoExt = Path.GetFileNameWithoutExtension(file);
@@ -131,6 +132,7 @@ namespace CLI
                 Console.WriteLine($"> {p.StartInfo.FileName} {p.StartInfo.Arguments}");
                 //p.StartInfo.CreateNoWindow = true;
                 p.StartInfo.UseShellExecute = false;
+                Console.Title = $"FFmpeginator: {presetName} - Processing {filesComplete+1}/{files.Length} files...";
                 p.Start();
                 p.WaitForExit();
                 if (p.ExitCode != 0)
@@ -138,6 +140,7 @@ namespace CLI
                     Console.WriteLine("FFmpeg reported error! Press any key to continue...");
                     Console.ReadKey();
                 }
+                filesComplete++;
             }
         }
 
