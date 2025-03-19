@@ -29,11 +29,20 @@ namespace LibFFR
             if (!Enabled) return;
             WshShell shell = new WshShell();
             string shortcutAddress = SpecialLocations.SendTo() + @"\" + ShortcutNamePrefix + Name + ".lnk";
+            Console.WriteLine("Creating new shortcut at " + shortcutAddress + ":");
             IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutAddress);
-            shortcut.TargetPath = $"FFmpeginatorCLI -p \"{Name}\"";
             // assumedly, FFmpeginatorCLI will be in the same directory as this executable.
-            shortcut.WorkingDirectory = SpecialLocations.ExeDir();
+            string wd = SpecialLocations.ExeDir();
+            Console.WriteLine("WD = " + wd);
+            shortcut.WorkingDirectory = wd;
+            string tp = $"{wd}\\FFmpeginatorCLI.exe";
+            Console.WriteLine("Target = " + tp);
+            shortcut.TargetPath = tp;
+            string a = $"-p \"{Name}\"";
+            Console.WriteLine("Arguments = "+a);
+            shortcut.Arguments = a;
             shortcut.Save();
+            Console.WriteLine();
         }
     }
 
@@ -106,6 +115,7 @@ namespace LibFFR
 
         public void RecreateShortcuts()
         {
+            Console.WriteLine("Removing shortcuts...");
             // Remove all existing shortcuts
             foreach (string filePath in Directory.GetFiles(SpecialLocations.SendTo()))
             {
@@ -117,6 +127,7 @@ namespace LibFFR
                     File.Delete(filePath);
                 }
             }
+            Console.WriteLine("Creating shortcuts...");
             // Create new ones
             foreach (var p in settings.Presets) p.CreateShortcut();
         }
@@ -128,6 +139,21 @@ namespace LibFFR
                 if (p.Name == name) return p;
             }
             return null;
+        }
+
+        public void TogglePreset(string name, bool enabled)
+        {
+            PresetByName(name).Enabled = enabled;
+            QueueJsonSave();
+        }
+
+        public void EnablePreset(string name) => TogglePreset(name, true);
+        public void DisablePreset(string name) => TogglePreset(name, false);
+
+        public void RemovePreset(string name)
+        {
+            settings.Presets.Remove(PresetByName(name));
+            QueueJsonSave();
         }
     }
 }

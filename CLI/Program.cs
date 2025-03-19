@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using LibFFR;
 
 namespace CLI
 {
@@ -14,16 +15,22 @@ namespace CLI
         static void Main(string[] args)
         {
             if (args.Length == 0) { PrintHelp(); return; }
-            string presetName;
             int argindex = 0;
+            var settings = new LibFFR.SettingsInterface();
+            bool helpNeedsToBePrinted = true;
+            bool commandRecognized;
             while (argindex < args.Length)
             {
+                commandRecognized = false;
                 if (args[argindex] == "-h" || args[argindex] == "--help")
                 {
+                    commandRecognized = true;
                     PrintHelp(); return;
                 }
                 if (args[argindex] == "-p" || args[argindex] == "--preset")
                 {
+                    commandRecognized = true;
+                    string presetName;
                     try
                     {
                         presetName = args[++argindex];
@@ -32,16 +39,86 @@ namespace CLI
                     {
                         PrintHelp(); return;
                     }
-                    RunPreset(presetName, args.Skip(argindex+1).ToArray()); return;
+                    RunPreset(presetName, args.Skip(argindex+1).ToArray(), settings); return;
+                }
+                if (args[argindex] == "-ap" || args[argindex] == "--add-preset")
+                {
+                    commandRecognized = true;
+                    string presetName, presetExt, presetArgs;
+                    try
+                    {
+                        presetName = args[++argindex];
+                        presetExt = args[++argindex];
+                        presetArgs = args[++argindex];
+                    } catch
+                    {
+                        PrintHelp(); return;
+                    }
+                    settings.AddPreset(new LibFFR.Preset
+                    {
+                        Name = presetName,
+                        FFmpegArguments = presetArgs,
+                        FileExtension = presetExt
+                    });
+                    settings.RecreateShortcuts();
+                }
+                if (args[argindex] == "-ep" || args[argindex] == "--enable-preset")
+                {
+                    commandRecognized = true;
+                    string presetName;
+                    try { presetName = args[++argindex]; }
+                    catch { PrintHelp(); return; }
+                    settings.EnablePreset(presetName);
+                    settings.RecreateShortcuts();
+                }
+                if (args[argindex] == "-dp" || args[argindex] == "--disable-preset")
+                {
+                    commandRecognized = true;
+                    string presetName;
+                    try { presetName = args[++argindex]; }
+                    catch { PrintHelp(); return; }
+                    settings.DisablePreset(presetName);
+                    settings.RecreateShortcuts();
+                }
+                if (args[argindex] == "-rp" || args[argindex] == "--remove-preset")
+                {
+                    commandRecognized = true;
+                    string presetName;
+                    try { presetName = args[++argindex]; }
+                    catch { PrintHelp(); return; }
+                    settings.RemovePreset(presetName);
+                    settings.RecreateShortcuts();
+                }
+                if (args[argindex] == "-lp" || args[argindex] == "--list-preset" || args[argindex] == "--list-presets")
+                {
+                    commandRecognized = true;
+                    Console.WriteLine("Presets list:");
+                    Console.WriteLine();
+                    foreach (var p in settings.Presets())
+                    {
+                        string enabled = p.Enabled ? "enabled" : "disabled";
+                        Console.WriteLine($"Preset \"{p.Name}\" ({enabled})");
+                        Console.WriteLine("FFmpeg arguments: " + p.FFmpegArguments);
+                        Console.WriteLine("File extension: " + p.FileExtension);
+                        Console.WriteLine();
+                    }
+                }
+                if (args[argindex] == "-rs" || args[argindex] == "--recreate-shortcuts")
+                {
+                    settings.RecreateShortcuts();
+                }
+                if (commandRecognized) helpNeedsToBePrinted = false;
+                else
+                {
+                    PrintHelp(); return;
                 }
                 argindex++;
             }
-            PrintHelp(); return;
+            if (helpNeedsToBePrinted) PrintHelp();
         }
 
-        static void RunPreset(string presetName, string[] files)
+        static void RunPreset(string presetName, string[] files, SettingsInterface settings)
         {
-            var settings = new LibFFR.SettingsInterface();
             var preset = settings.PresetByName(presetName);
             if (preset == null) { PrintHelp(); return; }
             foreach (string file in files)
@@ -56,12 +133,30 @@ namespace CLI
                 p.StartInfo.UseShellExecute = false;
                 p.Start();
                 p.WaitForExit();
+                if (p.ExitCode != 0)
+                {
+                    Console.WriteLine("FFmpeg reported error! Press any key to continue...");
+                    Console.ReadKey();
+                }
             }
         }
 
         static void PrintHelp()
         {
-            throw new NotImplementedException();
+            Console.Write(@"FFmpeginatorCLI <options...>
+
+options:
+    (-h || --help) -> Print help
+    (-p || --preset) [preset name] [files...] -> Convert files with preset
+    (-ap || --add-preset) [preset name] [extension] [ffmpeg args] -> Create new preset
+    (-rp || --remove-preset) [preset name] -> Delete preset
+    (-ep || --enable-preset) [preset name] -> Enable preset (show in Send To menu)
+    (-dp || --disable-preset) [preset name] -> Disable preset (hide from Send To menu)
+    (-lp || --list-preset || --list-presets) -> List presets
+    (-rs || --recreate-shortcuts) -> Recreate Send To shortcuts
+    (unknown argument || missing parameter) -> Print help
+
+");
         }
     }
 }
