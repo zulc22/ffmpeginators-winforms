@@ -81,9 +81,9 @@ namespace LibFFR
         private string FilePath;
         public SettingsInterface()
         {
-            FilePath = SpecialLocations.Roaming() + @"\ffmpeginators.json";
-            if (File.Exists(FilePath)) { LoadJson(); return; }
             FilePath = SpecialLocations.ExeDir() + @"\ffmpeginators.json";
+            if (File.Exists(FilePath)) { LoadJson(); return; }
+            FilePath = SpecialLocations.Roaming() + @"\ffmpeginators.json";
             if (File.Exists(FilePath)) { LoadJson(); return; }
             InitJson();
         }
