@@ -10,7 +10,6 @@ OutputDir="."
 OutputBaseFilename="setup-ffmpeginator"
 
 SetupIconFile="icons/ff_install.ico"
-UninstallIconFile="icons/ff_uninstall.ico"
 
 PrivilegesRequired=lowest
 ChangesEnvironment=yes
