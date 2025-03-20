@@ -36,6 +36,11 @@ namespace PresetManager
             OpenedFrom.ResetLbPresets(); // Update listbox in main form since we modified the list
             InitializeComponent();
 
+            PresetToForm();
+        }
+
+        private void PresetToForm()
+        {
             // Copy Preset data into form fields
             tbPresetName.Text = Preset.Name;
             tbFileExtension.Text = Preset.FileExtension;
@@ -51,33 +56,28 @@ namespace PresetManager
         private void fPresetEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (!DiscardPreset) { 
-                SyncPresetToForm();
+                FormToPreset();
                 // Add preset
                 Settings.AddPreset(Preset);
                 //OpenedFrom.Show();
                 OpenedFrom.ResetLbPresets(); // Update listbox in main form since the list was modified
             }
+            // try to remove ourselves from the preset list's list of open preset editors
+            try
+            {
+                OpenedFrom.OpenPresetEditors.Remove(this);
+            } catch { }
             Dispose(); // mark this object for deletion
         }
 
-        private void SyncPresetToForm()
+        private void FormToPreset()
         {
             // set Preset options to the one in the form
             Preset.Enabled = cbEnabled.Checked;
             Preset.Name = tbPresetName.Text;
             Preset.FileExtension = tbFileExtension.Text;
-            // build textbox line list into space-seperated string
-            Preset.FFmpegArguments = "";
-            for (int i = 0; i < tbArguments.Lines.Length; i++)
-            {
-                Preset.FFmpegArguments += tbArguments.Lines[i];
-                // add a space
-                // (don't if this is the last loop, so there isn't a trailing space at the end.)
-                if (i != tbArguments.Lines.Length - 1)
-                {
-                    Preset.FFmpegArguments += " ";
-                }
-            }
+            // turn newlines into spaces
+            Preset.FFmpegArguments = tbArguments.Text.Replace("\r\n", " ");
         }
 
         private void tbFileExtension_TextChanged(object sender, EventArgs e)
@@ -93,7 +93,7 @@ namespace PresetManager
 
         private void btnCopyJSON_Click(object sender, EventArgs e)
         {
-            SyncPresetToForm();
+            FormToPreset();
             Clipboard.SetText(Preset.ToJson());
             MessageBox.Show("Copied to clipboard");
         }
@@ -109,14 +109,23 @@ namespace PresetManager
                 MessageBox.Show("Unable to parse the JSON in the clipboard.");
                 return;
             }
-            (new fPresetEditor(
-                presetFromJson,
-                OpenedFrom,
-                Settings,
-                true
-            )).Show();
+            Preset = presetFromJson;
+            PresetToForm();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
             DiscardPreset = true;
             Close();
+        }
+
+        private void fPresetEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // no name collisions! blehh!!
+            while (Settings.PresetByName(tbPresetName.Text) != null)
+            {
+                tbPresetName.Text += " (copy)";
+            }
         }
     }
 }

@@ -41,13 +41,14 @@
             this.lbExample = new System.Windows.Forms.Label();
             this.btnCopyJSON = new System.Windows.Forms.Button();
             this.btnPasteJSON = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(203, 225);
+            this.btnOK.Location = new System.Drawing.Point(236, 225);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.Size = new System.Drawing.Size(42, 23);
             this.btnOK.TabIndex = 0;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -155,11 +156,22 @@
             this.btnPasteJSON.UseVisualStyleBackColor = true;
             this.btnPasteJSON.Click += new System.EventHandler(this.btnPasteJSON_Click);
             // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(171, 225);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(59, 23);
+            this.btnCancel.TabIndex = 12;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
             // fPresetEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(287, 258);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnPasteJSON);
             this.Controls.Add(this.btnCopyJSON);
             this.Controls.Add(this.lbExample);
@@ -177,6 +189,7 @@
             this.MaximizeBox = false;
             this.Name = "fPresetEditor";
             this.Text = "Preset Editor";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.fPresetEditor_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.fPresetEditor_FormClosed);
             this.Shown += new System.EventHandler(this.fPresetEditor_Shown);
             this.ResumeLayout(false);
@@ -198,5 +211,6 @@
         private System.Windows.Forms.Label lbExample;
         private System.Windows.Forms.Button btnCopyJSON;
         private System.Windows.Forms.Button btnPasteJSON;
+        private System.Windows.Forms.Button btnCancel;
     }
 }
