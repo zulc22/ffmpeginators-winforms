@@ -1,6 +1,6 @@
 [Setup]
 AppName=FFmpeginator
-AppVersion=0.2
+AppVersion=0.3
 WizardStyle=modern
 DefaultDirName={autopf}\FFmpeginator
 DefaultGroupName=FFmpeginator
