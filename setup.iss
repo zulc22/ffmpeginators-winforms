@@ -1,6 +1,7 @@
 [Setup]
 AppName=FFmpeginator
-AppVersion=0.3
+AppVersion=0.4
+AppId=zulc22SadieFFmpeginator
 WizardStyle=modern
 DefaultDirName={autopf}\FFmpeginator
 DefaultGroupName=FFmpeginator
