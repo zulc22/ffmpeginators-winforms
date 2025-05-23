@@ -130,6 +130,7 @@ namespace CLI
                 p.StartInfo.FileName = "ffmpeg";
                 p.StartInfo.Arguments = $"-i \"{file}\" {preset.FFmpegArguments} \"{filePath}\\{fnNoExt}.{preset.FileExtension}\"";
                 Console.WriteLine($"> {p.StartInfo.FileName} {p.StartInfo.Arguments}");
+                p.StartInfo.WorkingDirectory = filePath;
                 //p.StartInfo.CreateNoWindow = true;
                 p.StartInfo.UseShellExecute = false;
                 Console.Title = $"FFmpeginator: {presetName} - Processing {filesComplete+1}/{files.Length} files...";

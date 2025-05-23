@@ -1,6 +1,6 @@
 [Setup]
 AppName=FFmpeginator
-AppVersion=0.4
+AppVersion=0.5
 AppId=zulc22SadieFFmpeginator
 WizardStyle=modern
 DefaultDirName={autopf}\FFmpeginator
@@ -50,7 +50,7 @@ if Exec('ffmpeg','-version','',SW_HIDE,ewWaitUntilTerminated,ResultCode) then be
   Result := '(FFmpeg found on system. not required)';
 end else begin
   Result := '(Required. FFmpeg not in path)';
-  WizardSelectComponents('gyanffmpeg');
+  (* WizardSelectComponents('gyanffmpeg'); *)
 end;
 
 end;
